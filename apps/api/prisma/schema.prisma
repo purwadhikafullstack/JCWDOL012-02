@@ -10,12 +10,157 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Sample {
-  id        Int      @id @default(autoincrement())
-  name      String
-  code      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id          Int           @id @default(autoincrement())
+  name        String?
+  email       String        @unique
+  role        Role          @default(User)
+  phone       String?
+  image       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deleted     Boolean       @default(false)
+  address     Address[]
+  transaction Transaction[]
+  warehouse   Warehouse[]
+  cart        Cart[]
+  authType    AuthType
+  LocalAuth   LocalAuth?
+  SocialAuth  SocialAuth?
+}
 
-  @@map("samples") // if you want to use snake_case format
+model LocalAuth {
+  id                    Int      @id @default(autoincrement())
+  email                 String   @unique
+  password              String?
+  confirmationCode      String
+  otpCode               String?
+  confirmed             Boolean  @default(false)
+  confirmationTimeStamp DateTime
+  user                  User     @relation(fields: [userId], references: [id])
+  userId                Int      @unique
+}
+
+model SocialAuth {
+  id      Int    @id @default(autoincrement())
+  service String
+  email   String @unique
+  user    User   @relation(fields: [userId], references: [id])
+  userId  Int    @unique
+}
+
+model Address {
+  id            Int           @id @default(autoincrement())
+  latitude      Float
+  longtitude    Float
+  postalCode    Int
+  city          String
+  cityId        Int
+  fullAddress   String
+  isMainAddress Boolean       @default(false)
+  User          User?         @relation(fields: [userId], references: [id])
+  userId        Int?
+  Transaction   Transaction[]
+  Warehouse     Warehouse?
+}
+
+model Transaction {
+  id                Int                 @id @default(autoincrement())
+  shippingCost      Float
+  paymentMethod     String
+  orderStatus       OrderStatus         @default(MenungguPembayaran)
+  address           Address             @relation(fields: [addressId], references: [id])
+  addressId         Int
+  User              User                @relation(fields: [userId], references: [id])
+  userId            Int
+  TransactionDetail TransactionDetail[]
+}
+
+model TransactionDetail {
+  id              Int         @id @default(autoincrement())
+  orderedQuantity Int
+  productName     Product     @relation(fields: [productId], references: [id])
+  productId       Int
+  transaction     Transaction @relation(fields: [transactionId], references: [id])
+  transactionId   Int
+}
+
+model Warehouse {
+  id        Int     @id @default(autoincrement())
+  address   Address @relation(fields: [addressId], references: [id])
+  addressId Int     @unique
+  stock     Stock[]
+  User      User    @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+model Stock {
+  id          Int       @id @default(autoincrement())
+  quantity    Int
+  Warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  warehouseId Int
+  Product     Product   @relation(fields: [productId], references: [id])
+  productId   Int
+}
+
+model Cart {
+  id         Int          @id @default(autoincrement())
+  User       User         @relation(fields: [userId], references: [id])
+  userId     Int
+  CartDetail CartDetail[]
+}
+
+model CartDetail {
+  id              Int     @id @default(autoincrement())
+  productQuantity Int
+  totalPrice      Float
+  cart            Cart    @relation(fields: [cartId], references: [id])
+  cartId          Int
+  Product         Product @relation(fields: [productId], references: [id])
+  productId       Int
+}
+
+model Product {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  description       String              @db.Text
+  price             Float
+  image             ProductImage[]
+  category          String
+  brand             String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  deleted           Boolean?
+  deletedAt         DateTime?
+  stock             Stock[]
+  TransactionDetail TransactionDetail[]
+  cartDetail        CartDetail[]
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  url       String
+  Product   Product @relation(fields: [productId], references: [id])
+  productId Int
+}
+
+enum OrderStatus {
+  MenungguPembayaran
+  MenungguKonfirmasiPembayaran
+  Diproses
+  Dikirim
+  PesananDikonfirmasi
+  Dibatalkan
+}
+
+enum Role {
+  User
+  SuperAdmin
+  WarehouseAdmin
+}
+
+enum AuthType {
+  Local
+  Google
+  Facebook
 }
