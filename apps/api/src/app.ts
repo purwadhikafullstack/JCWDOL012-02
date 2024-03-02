@@ -6,8 +6,7 @@ import cookieParser from 'cookie-parser';
 import { NODE_ENV, PORT } from './config';
 import { ApiRouter } from './routers/api.router';
 
-// import '../src/auth/local.auth';
-import '../src/auth/social.auth';
+import './auth/passport';
 
 export default class App {
   private app: Express;
