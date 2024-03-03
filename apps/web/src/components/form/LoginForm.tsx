@@ -111,7 +111,7 @@ export default function LoginForm() {
       </Form>
       <div className="flex space-x-2 text-sm text-gray-600 font-medium justify-center">
         <p>Don&apos;t have an account?</p>
-        <Link href="/auth/register" className="underline text-blue-600">
+        <Link href="/register" className="underline text-blue-600">
           Create an account
         </Link>
       </div>

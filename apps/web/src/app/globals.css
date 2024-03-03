@@ -56,4 +56,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .heightMaxBody {
+    min-height: calc(100vh - 5.5rem);
+  }
 }

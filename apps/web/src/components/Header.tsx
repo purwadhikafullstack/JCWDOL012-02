@@ -64,7 +64,7 @@ export const Header = () => {
                 <MenubarTrigger className="data-[state=open]:bg-background data-[state=closed]:bg-background">
                   <AvatarProfile url={user.image} name={user.name} />
                 </MenubarTrigger>
-                <MenubarContent align="end" className="font-medium text-gray-800">
+                <MenubarContent align="end" className="font-medium text-gray-800 min-w-[250px]">
                   <MenubarItem className="focus:bg-background max-w-[300px]">
                     <div className="flex w-full justify-between items-center space-x-4">
                       <AvatarProfile url={user.image} name={user.name} />
@@ -88,10 +88,10 @@ export const Header = () => {
             </Menubar>
           ) : (
             <div className="flex items-center space-x-4">
-              <Link href={`/auth/login?callbak=${pathname}`} className={buttonVariants({ variant: 'outline' })}>
+              <Link href={`/login?callback=${pathname}`} className={buttonVariants({ variant: 'outline' })}>
                 Login
               </Link>
-              <Link href="/auth/register" className={buttonVariants({ variant: 'default' })}>
+              <Link href="/register" className={buttonVariants({ variant: 'default' })}>
                 Sign up
               </Link>
             </div>

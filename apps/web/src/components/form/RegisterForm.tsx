@@ -35,6 +35,9 @@ export default function RegisterForm() {
       success: (data) => {
         return data.message;
       },
+      error: (error) => {
+        return error.message;
+      },
     });
   }
 
@@ -77,7 +80,7 @@ export default function RegisterForm() {
       </Form>
       <div className="flex space-x-2 text-sm text-gray-600 font-medium justify-center">
         <p>Have an account?</p>
-        <Link href="/auth/login" className="underline text-blue-600">
+        <Link href="/login" className="underline text-blue-600">
           Login here
         </Link>
       </div>

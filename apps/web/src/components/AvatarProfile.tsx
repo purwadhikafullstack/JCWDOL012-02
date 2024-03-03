@@ -10,8 +10,8 @@ export default function AvatarProfile(props: AvatarProfileProps) {
   const initialName = name?.charAt(0).toUpperCase();
 
   return (
-    <Avatar>
-      <AvatarImage src={url!} />
+    <Avatar className="border-2 border-gray-400">
+      <AvatarImage src={url} alt={name} />
       <AvatarFallback>{initialName}</AvatarFallback>
     </Avatar>
   );

@@ -1,1 +1,1 @@
-export const authPage = ['/auth/login', '/auth/register', '/auth/confirm/[param]'];
+export const authPage = ['/login', '/register', '/confirm/[code]', '/reset-password/[code]'];

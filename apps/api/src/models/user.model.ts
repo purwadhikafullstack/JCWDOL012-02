@@ -12,6 +12,40 @@ export const getUserWithEmail = async (email: string) => {
   });
 };
 
+export const setRegisteringUser = async (email: string, expiresAt: Date, code: string) => {
+  return await prisma.user.create({
+    data: {
+      email: email as string,
+      authType: 'Local',
+      LocalAuth: {
+        create: {
+          email: email as string,
+          confirmationCode: code,
+          confirmationTimeStamp: expiresAt,
+        },
+      },
+    },
+  });
+};
+
+export const updateRegisteringUser = async (email: string, name: string, hashedPassword: string) => {
+  await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      name,
+      email,
+      LocalAuth: {
+        update: {
+          password: hashedPassword,
+          confirmed: true,
+        },
+      },
+    },
+  });
+};
+
 export const setUserOtp = async (email: string, otp: string) => {
   return await prisma.user.update({
     where: {

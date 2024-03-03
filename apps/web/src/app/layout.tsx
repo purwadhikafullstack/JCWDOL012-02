@@ -6,7 +6,6 @@ import Providers from '@/utils/Providers';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Toaster as Sonner } from '@/components/ui/sonner';
-import { Toaster } from '@/components/ui/toaster';
 import { SessionStoreProvider } from '@/utils/SessionProvider';
 import './globals.css';
 
@@ -24,7 +23,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <SessionStoreProvider>
             <Sonner position="top-center" richColors />
-            <Toaster />
             <Header />
             {children}
             <Footer />
