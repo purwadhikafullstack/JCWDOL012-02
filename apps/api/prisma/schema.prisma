@@ -17,6 +17,7 @@ model User {
   role        Role          @default(User)
   phone       String?
   image       String?
+  bio         String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   deleted     Boolean       @default(false)

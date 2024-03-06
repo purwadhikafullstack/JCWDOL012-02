@@ -1,11 +1,13 @@
 import express, { json, urlencoded, Express, Request, Response, NextFunction } from 'express';
+import path from 'path';
 import cors from 'cors';
-import passport from 'passport';
 import session from 'express-session';
+import passport from 'passport';
 import cookieParser from 'cookie-parser';
-import { NODE_ENV, PORT } from './config';
+import { PORT } from './config';
 import { ApiRouter } from './routers/api.router';
-
+import { corsOptions } from './utils/cors';
+import { sessionOptions } from './utils/session';
 import './auth/passport';
 
 export default class App {
@@ -19,29 +21,11 @@ export default class App {
   }
 
   private configure(): void {
-    this.app.use(
-      cors({
-        origin: 'http://localhost:3000',
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-      }),
-    );
+    this.app.use(cors(corsOptions));
     this.app.use(json());
     this.app.use(cookieParser());
     this.app.use(urlencoded({ extended: true }));
-    this.app.use(
-      session({
-        name: 'session',
-        secret: 'megatronics',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-          httpOnly: true,
-          secure: NODE_ENV === 'production',
-        },
-      }),
-    );
+    this.app.use(session(sessionOptions));
     this.app.use(passport.initialize());
     this.app.use(passport.session());
   }
@@ -69,10 +53,10 @@ export default class App {
 
   private routes(): void {
     const apiRouter = new ApiRouter();
-
     this.app.get('/', (req: Request, res: Response) => {
       res.send(`Hello, Wellcome to Megatronics API!`);
     });
+    this.app.use('/api/public', express.static(path.join(__dirname, '../public')));
     this.app.use('/api', apiRouter.getRouter());
   }
 

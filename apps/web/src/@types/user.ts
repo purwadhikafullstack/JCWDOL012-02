@@ -5,6 +5,7 @@ export interface User {
   role: string;
   phone: string;
   image: string;
+  bio: string;
   createdAt: string;
   updatedAt: string;
   deleted: boolean;

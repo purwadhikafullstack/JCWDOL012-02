@@ -59,15 +59,15 @@ export default function Sidebar() {
                   <User size={24} />
                 </SidebarLink>
                 <Separator />
-                <SidebarLink href={'/cart'} label={'My Carts'}>
+                <SidebarLink href={'/carts'} label={'My Carts'}>
                   <ShoppingCart size={24} />
                 </SidebarLink>
                 <Separator />
-                <SidebarLink href={'/order'} label={'My Orders'}>
+                <SidebarLink href={'/orders'} label={'My Orders'}>
                   <Package size={24} />
                 </SidebarLink>
                 <Separator />
-                <SidebarLink href={'/shiping-address'} label={'Shipping Addresses'}>
+                <SidebarLink href={'/address'} label={'Shipping Addresses'}>
                   <Truck size={24} />
                 </SidebarLink>
                 <Separator />

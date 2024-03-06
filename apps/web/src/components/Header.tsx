@@ -25,6 +25,8 @@ export const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
 
+  console.log(user);
+
   useEffect(() => {
     const isSocial = isSocialAuth();
     getLocalStorage();
