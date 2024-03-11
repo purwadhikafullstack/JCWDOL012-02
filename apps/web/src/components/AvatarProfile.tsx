@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface AvatarProfileProps {
-  url: string;
-  name: string;
+  url: string | null;
+  name: string | null;
 }
 
 export default function AvatarProfile(props: AvatarProfileProps) {
@@ -11,7 +11,7 @@ export default function AvatarProfile(props: AvatarProfileProps) {
 
   return (
     <Avatar className="border-2 border-gray-400">
-      <AvatarImage src={url} alt={name} />
+      <AvatarImage src={url!} alt={name!} />
       <AvatarFallback>{initialName}</AvatarFallback>
     </Avatar>
   );

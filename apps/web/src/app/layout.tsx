@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
-
-import Providers from '@/utils/Providers';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { SessionStoreProvider } from '@/utils/SessionProvider';
+import { cookies } from 'next/headers';
+import FlashToaster from '@/components/flash/flash';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -17,17 +17,19 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const refreshToken = cookies().get('refreshToken')?.value;
   return (
     <html lang="en" className="light" suppressHydrationWarning>
       <body className={cn('min-h-screen bg-background antialiased', inter.className)}>
-        <Providers>
-          <SessionStoreProvider>
-            <Sonner position="top-center" richColors />
-            <Header />
-            {children}
-            <Footer />
-          </SessionStoreProvider>
-        </Providers>
+        {/* <Providers> */}
+        <SessionStoreProvider>
+          <Sonner position="top-center" richColors toastOptions={{ duration: 1000 }} />
+          <FlashToaster />
+          <Header refreshToken={refreshToken!} />
+          {children}
+          <Footer />
+        </SessionStoreProvider>
+        {/* </Providers> */}
       </body>
     </html>
   );

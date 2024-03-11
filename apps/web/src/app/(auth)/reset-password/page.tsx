@@ -1,29 +1,27 @@
 'use client';
 
-import { resetPassword } from '@/services/user';
-import { resetPasswordSchema } from '@/validators/userValidator';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import Link from 'next/link';
+import Image from 'next/image';
+import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import { z } from 'zod';
 import { Card } from '@/components/ui/card';
-import Link from 'next/link';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
-import MaxWidthWrapper from '@/components/MaxWidthWrapper';
-import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronLeft } from 'lucide-react';
+import { resetPassword } from '@/services/user';
+import { resetPasswordSchema } from '@/validators/userValidator';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 export default function RequestResetPassword() {
   const router = useRouter();
   const searchParam = useSearchParams();
 
-  const email = searchParam.get('email');
   const code = searchParam.get('code');
-
-  console.log(email, code);
+  const email = searchParam.get('email');
 
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
@@ -38,7 +36,7 @@ export default function RequestResetPassword() {
     toast.promise(resetPassword(values), {
       loading: 'Sending request to email...',
       success: (data) => {
-        router.push('/profile');
+        router.push('/login');
         return data.message;
       },
       error: (error) => {
@@ -53,8 +51,8 @@ export default function RequestResetPassword() {
         <div className="flex relative flex-col flex-1 w-full justify-center items-center">
           <div className="flex w-full absolute top-8 max-w-[500px] justify-between md:px-14 px-4 mb-8">
             <p>Megatronics.</p>
-            <Link href="/profile" className="text-sm flex items-center text-gray-700 space-x-4">
-              <ChevronLeft size={16} /> Back to profile
+            <Link href="/" className="text-sm flex items-center text-gray-700 space-x-4">
+              <ChevronLeft size={16} /> Back to home
             </Link>
           </div>
           <div className="flex flex-col w-full max-w-[500px] justify-center md:px-14 px-4 space-y-10">

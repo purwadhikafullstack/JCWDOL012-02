@@ -2,33 +2,39 @@
 
 import Link from 'next/link';
 import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import { Separator } from '../ui/separator';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { loginSchema } from '@/validators/authValidator';
-import { FaGoogle } from 'react-icons/fa6';
 import { loginEmail } from '@/services/auth';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { getActions } from '@/store/authStore';
+import { loginSchema } from '@/validators/authValidator';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useSessionStore } from '@/utils/SessionProvider';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import GoogleButton from './GoogleButton';
 
 export default function LoginForm() {
-  const searchParams = useSearchParams();
-  const { login, setLocalStorage, socialAuth } = useSessionStore((state) => state);
-  const callback = searchParams.get('callback');
+  const { getUser } = useSessionStore((state) => state);
+  const { setAccessToken } = getActions();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callback = searchParams.get('callback');
+  const accessToken = searchParams.get('accessToken');
 
   const backToBefore = () => {
     router.push(callback || '/');
   };
 
-  const googleAuth = () => {
-    socialAuth(true);
-    window.open(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/social/google`, '_self');
-  };
+  useEffect(() => {
+    if (accessToken) {
+      setAccessToken(accessToken);
+      router.push(callback || '/');
+    }
+  }, [accessToken, setAccessToken, router, callback]);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -41,15 +47,12 @@ export default function LoginForm() {
   function onSubmit(values: z.infer<typeof loginSchema>) {
     toast.promise(loginEmail(values), {
       loading: 'Logging in...',
-      success: (data) => {
+      success: () => {
+        getUser();
         backToBefore();
-        setLocalStorage(data.user);
-        login(data.user);
-        return data.message;
+        return 'Login success';
       },
-      error: (error) => {
-        return error.message;
-      },
+      error: (error) => error.message,
     });
     form.reset();
   }
@@ -61,15 +64,12 @@ export default function LoginForm() {
         <p className="text-sm text-gray-600 font-medium">Wellcome to Megatronics, enter your credentials.</p>
       </div>
       <div className="flex wfull justify-center items-center space-x-2">
-        <Button variant="outline" className="py-0 gap-2 w-full font-medium text-gray-800" onClick={googleAuth}>
-          <FaGoogle size={20} />
-          Google
-        </Button>
+        <GoogleButton />
       </div>
       <div className="flex w-full justify-center items-center space-x-2 text-sm text-gray-600">
-        <Separator className="w-24" />
+        <Separator className="md:max-w-24 max-w-12" />
         <p>or continue with email</p>
-        <Separator className="w-24" />
+        <Separator className="md:max-w-24 max-w-12" />
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
@@ -100,7 +100,7 @@ export default function LoginForm() {
             )}
           />
           <div className="flex w-full justify-end">
-            <Link href="/auth/forgot-password" className="underline text-sm font-medium text-blue-600">
+            <Link href="/request/reset-password" className="underline text-sm font-medium text-blue-600">
               Forgot password ?
             </Link>
           </div>

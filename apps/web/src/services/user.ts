@@ -1,63 +1,70 @@
-import { requestResetPasswordSchema, resetPasswordSchema, userProfileSchema } from '@/validators/userValidator';
 import { z } from 'zod';
-
-const apiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+import { AxiosError } from 'axios';
+import { ErrorFromBe } from '@/@types';
+import { axiosInstance, axiosAuth } from '@/lib/axios';
+import {
+  requestResetPasswordSchema,
+  resetPasswordSchema,
+  userProfileSchema,
+  userUpdatePasswordSchema,
+} from '@/validators/userValidator';
 
 export const requestResetPassword = async (values: z.infer<typeof requestResetPasswordSchema>) => {
-  const res = await fetch(`${apiUrl}user/reset-password/request`, {
-    method: 'POST',
-    credentials: 'include',
-    body: JSON.stringify(values),
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await res.json();
-  if (data.success) {
-    return data;
-  } else {
-    throw new Error(data.message);
-  }
+  return await axiosInstance
+    .post('/user/reset-password/request', values)
+    .then((res) => res.data)
+    .then((data) => {
+      if (data.success) return data;
+    })
+    .catch((error: AxiosError<ErrorFromBe>) => {
+      throw new Error(error.response?.data.message);
+    });
 };
 
 export const resetPassword = async (values: z.infer<typeof resetPasswordSchema>) => {
-  const res = await fetch(`${apiUrl}user/reset-password/confirm`, {
-    method: 'PUT',
-    credentials: 'include',
-    body: JSON.stringify(values),
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await res.json();
-  if (data.success) {
-    return data;
-  } else {
-    throw new Error(data.message);
-  }
+  return await axiosInstance
+    .put('/user/reset-password/confirm', values)
+    .then((res) => res.data)
+    .then((data) => {
+      if (data.success) return data;
+    })
+    .catch((error: AxiosError<ErrorFromBe>) => {
+      throw new Error(error.response?.data.message);
+    });
 };
 
 export const uploadImage = async (formData: FormData) => {
-  const res = await fetch(`${apiUrl}user/update-image`, {
-    method: 'POST',
-    credentials: 'include',
-    body: formData,
-  });
-  const data = await res.json();
-  if (data.success) {
-    return data;
-  } else {
-    throw new Error(data.message);
-  }
+  return await axiosAuth
+    .put('/user/update/image', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+    .then((res) => res.data)
+    .then((data) => {
+      if (data.success) return data;
+    })
+    .catch((error: AxiosError<ErrorFromBe>) => {
+      throw new Error(error.response?.data.message);
+    });
 };
 
 export const updateProfile = async (values: z.infer<typeof userProfileSchema>) => {
-  const res = await fetch(`${apiUrl}user/update-profile`, {
-    method: 'PUT',
-    credentials: 'include',
-    body: JSON.stringify(values),
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await res.json();
-  if (data.success) {
-    return data;
-  } else {
-    throw new Error(data.message);
-  }
+  return await axiosAuth
+    .put('/user/update/profile', values)
+    .then((res) => res.data)
+    .then((data) => {
+      if (data.success) return data;
+    })
+    .catch((error: AxiosError<ErrorFromBe>) => {
+      throw new Error(error.response?.data.message);
+    });
+};
+
+export const updatePassword = async (values: z.infer<typeof userUpdatePasswordSchema>) => {
+  return await axiosAuth
+    .put('/user/update/password', values)
+    .then((res) => res.data)
+    .then((data) => {
+      if (data.success) return data;
+    })
+    .catch((error: AxiosError<ErrorFromBe>) => {
+      throw new Error(error.response?.data.message);
+    });
 };

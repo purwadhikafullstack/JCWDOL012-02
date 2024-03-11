@@ -1,14 +1,15 @@
 import express, { json, urlencoded, Express, Request, Response, NextFunction } from 'express';
 import path from 'path';
 import cors from 'cors';
-import session from 'express-session';
 import passport from 'passport';
+import strategies from './utils/passport';
 import cookieParser from 'cookie-parser';
 import { PORT } from './config';
 import { ApiRouter } from './routers/api.router';
 import { corsOptions } from './utils/cors';
-import { sessionOptions } from './utils/session';
-import './auth/passport';
+import { deserializeUser } from './middleware/auth/authentication.middleware';
+
+passport.use(strategies.google);
 
 export default class App {
   private app: Express;
@@ -25,9 +26,8 @@ export default class App {
     this.app.use(json());
     this.app.use(cookieParser());
     this.app.use(urlencoded({ extended: true }));
-    this.app.use(session(sessionOptions));
+    this.app.use(deserializeUser);
     this.app.use(passport.initialize());
-    this.app.use(passport.session());
   }
 
   private handleError(): void {

@@ -13,19 +13,26 @@ import {
   Package,
   PanelLeftOpen,
   PanelRightOpen,
+  Router,
   ShoppingCart,
   Truck,
   User,
 } from 'lucide-react';
 import SidebarLink from './SidebarLink';
+import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
   const { user } = useSessionStore((state) => state);
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  if (!user) {
+    router.push('/');
+  }
 
   return (
     <div
@@ -44,10 +51,10 @@ export default function Sidebar() {
         <div className="flex flex-col space-y-2 w-full">
           <div className="overflow-hidden border rounded-md">
             <div className="flex space-x-2 p-2 items-center">
-              <AvatarProfile url={user.image} name={user.name} />
+              <AvatarProfile url={user?.image!} name={user?.name!} />
               <div className="flex flex-col justify-center gap-1">
-                <h1 className="font-semibold text-xl">{user.name}</h1>
-                <p className="text-gray-700 text-sm">{user.email}</p>
+                <h1 className="font-semibold text-xl">{user?.name}</h1>
+                <p className="text-gray-700 text-sm">{user?.email}</p>
               </div>
             </div>
           </div>
@@ -77,7 +84,7 @@ export default function Sidebar() {
               </div>
             </div>
           </div>
-          {user.role === 'SuperAdmin' && (
+          {user?.role === 'SuperAdmin' && (
             <>
               <h1 className="flex items-center justify-center font-semibold">Event Organizer</h1>
               <div className="flex items-center justify-center border rounded-md">

@@ -1,4 +1,4 @@
-import { uploadUserProfile } from '@/services/multer';
+import { uploadUserProfile } from '@/utils/multer';
 import { Request, Response } from 'express';
 import { NextFunction } from 'express-serve-static-core';
 import multer from 'multer';

@@ -13,3 +13,15 @@ export const validateUpdateProfile = [
     next();
   },
 ];
+
+export const validateUpdatePassword = [
+  body('oldPassword').isString().optional(),
+  body('newPassword').isString().optional(),
+  (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, message: errors.array() });
+    }
+    next();
+  },
+];

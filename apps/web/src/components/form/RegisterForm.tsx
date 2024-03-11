@@ -2,21 +2,18 @@
 
 import Link from 'next/link';
 import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { registerEmailSchema } from '@/validators/authValidator';
-import { Separator } from '../ui/separator';
-import { FaGoogle } from 'react-icons/fa6';
-import { registerEmail } from '@/app/actions/auth';
 import { toast } from 'sonner';
-import { useSessionStore } from '@/utils/SessionProvider';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { Separator } from '../ui/separator';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerEmail } from '@/app/actions/auth';
+import { registerEmailSchema } from '@/validators/authValidator';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import GoogleButton from './GoogleButton';
 
 export default function RegisterForm() {
-  const { socialAuth } = useSessionStore((state) => state);
-
   const form = useForm<z.infer<typeof registerEmailSchema>>({
     resolver: zodResolver(registerEmailSchema),
     defaultValues: {
@@ -24,20 +21,13 @@ export default function RegisterForm() {
     },
   });
 
-  const googleAuth = () => {
-    socialAuth(true);
-    window.open(`${process.env.NEXT_PUBLIC_BASE_API_URL}auth/social/google`, '_self');
-  };
-
   function onSubmit(values: z.infer<typeof registerEmailSchema>) {
     toast.promise(registerEmail(values), {
       loading: 'Registering...',
       success: (data) => {
         return data.message;
       },
-      error: (error) => {
-        return error.message;
-      },
+      error: (error) => error.message,
     });
   }
 
@@ -48,10 +38,7 @@ export default function RegisterForm() {
         <p className="text-sm text-gray-600 font-medium">Wellcome to Megatronics, enter your credentials.</p>
       </div>
       <div className="flex wfull justify-center items-center space-x-2">
-        <Button onClick={googleAuth} variant="outline" className="py-0 gap-2 w-full font-medium text-gray-800">
-          <FaGoogle size={20} />
-          Google
-        </Button>
+        <GoogleButton />
       </div>
       <div className="flex w-full justify-center items-center space-x-2 text-sm text-gray-600">
         <Separator className="w-24" />

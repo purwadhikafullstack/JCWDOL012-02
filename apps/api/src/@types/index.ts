@@ -12,3 +12,8 @@ export interface LoginPayload {
   email: string;
   password: string;
 }
+
+export interface ParsedToken {
+  exp: number;
+  userId: number;
+}
