@@ -12,6 +12,7 @@ config({ path: resolve(__dirname, `../${envFile}.local`), override: true });
 
 export const PORT = process.env.PORT || 8000;
 export const DATABASE_URL = process.env.DATABASE_URL || '';
+export const BASE_API_URL = process.env.BASE_API_URL || 'http://localhost:8000/api/';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
 // nodemailer
@@ -26,6 +27,8 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
 const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || '';
 
 export const configs = {
+  port: PORT,
+  baseApiUrl: BASE_API_URL,
   frontEnd: {
     url: FRONTEND_URL,
   },

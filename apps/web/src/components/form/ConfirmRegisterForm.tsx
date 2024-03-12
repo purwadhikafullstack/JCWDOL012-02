@@ -35,7 +35,7 @@ export default function ConfirmRegisterForm(props: ConfirmRegisterFormProps) {
     toast.promise(registerVerify(values), {
       loading: 'Verifying and registering...',
       success: (data) => {
-        router.push('/auth/login');
+        router.push('/login');
         return data.message;
       },
       error: (error) => {

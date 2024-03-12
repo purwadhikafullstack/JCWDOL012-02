@@ -25,7 +25,7 @@ export const confirmResetPassword = async (req: Request, res: Response, next: Ne
   if (user.LocalAuth?.otpCode !== code) {
     return res.status(400).json({
       success: false,
-      message: 'Invalid code',
+      message: 'Invalid url code',
     });
   }
   next();

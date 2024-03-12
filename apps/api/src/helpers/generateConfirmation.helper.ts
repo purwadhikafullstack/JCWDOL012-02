@@ -15,8 +15,8 @@ export default function generateConfirmation(length: number, email: string, type
     const randomIndex = randomBytes.readUInt8(i) % characters.length;
     code += characters.charAt(randomIndex);
   }
-  const verificationUrl = `${configs.frontEnd.url}/auth/confirm/${code}?email=${email}`;
-  const resetPasswordUrl = `${configs.frontEnd.url}/auth/reset-password/${code}?email=${email}`;
+  const verificationUrl = `${configs.frontEnd.url}/confirm/${code}?email=${email}`;
+  const resetPasswordUrl = `${configs.frontEnd.url}/reset-password/${code}?email=${email}`;
   return {
     code,
     url: type === EmailType.verification ? verificationUrl : resetPasswordUrl,

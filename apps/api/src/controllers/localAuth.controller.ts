@@ -5,28 +5,23 @@ import { RegisterPayload, VerificationPayload } from '@/@types';
 import { hashPassword } from '@/helpers/hashPassword.helper';
 import generateConfirmation from '@/helpers/generateConfirmation.helper';
 import dayjs from 'dayjs';
+import { setRegisteringUser, updateRegisteringUser } from '@/models/user.model';
 
 export class LocalAuthController {
   async register(req: Request, res: Response) {
     try {
       const { email }: RegisterPayload = req.body;
       const generatedConfirmationCode = generateConfirmation(20, email, EmailType.verification);
+
       const expiresAt = dayjs().add(1, 'hour').toDate();
-      await prisma.user.create({
-        data: {
-          email: email as string,
-          authType: 'Local',
-          LocalAuth: {
-            create: {
-              email: email as string,
-              confirmationCode: generatedConfirmationCode.code,
-              confirmationTimeStamp: expiresAt,
-            },
-          },
-        },
-      });
+
+      await setRegisteringUser(email, expiresAt, generatedConfirmationCode.code);
+
       await sendEmail(email, generatedConfirmationCode.url, EmailType.verification);
-      return res.status(201).json({ success: true, message: 'Check email inbox for confirmation' });
+
+      return res
+        .status(201)
+        .json({ success: true, message: 'Check email inbox for confirmation, if not found please check spam.' });
     } catch (error) {
       console.log(error);
     }
@@ -35,22 +30,11 @@ export class LocalAuthController {
   async emailVerification(req: Request, res: Response) {
     try {
       const { name, email, password }: VerificationPayload = req.body;
+
       const hashedPassword: string = hashPassword(password);
-      await prisma.user.update({
-        where: {
-          email,
-        },
-        data: {
-          name,
-          email,
-          LocalAuth: {
-            update: {
-              password: hashedPassword,
-              confirmed: true,
-            },
-          },
-        },
-      });
+
+      await updateRegisteringUser(email, name, hashedPassword);
+      
       return res.status(201).json({
         success: true,
         message: 'Selamat, akun anda sudah terferifikasi',
