@@ -10,16 +10,16 @@ import { Button } from '../ui/button';
 import { User } from '@/@types/user';
 import { updateProfile } from '@/services/user';
 import { toast } from 'sonner';
-import { updateUser } from '@/hooks/updateUser';
-import { useSessionStore } from '@/utils/SessionProvider';
 import { useRouter } from 'next/navigation';
+import { Textarea } from '../ui/textarea';
+import { useSessionStore } from '@/utils/SessionProvider';
 
 interface ProfileFormProps {
   user: User;
 }
 
 export default function ProfileForm({ user }: ProfileFormProps) {
-  const { setLocalStorage, reset } = useSessionStore((state) => state);
+  const { getUser } = useSessionStore((state) => state);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof userProfileSchema>>({
@@ -35,22 +35,16 @@ export default function ProfileForm({ user }: ProfileFormProps) {
     toast.promise(updateProfile(values), {
       loading: 'Updating profile...',
       success: (data) => {
-        updateUser(setLocalStorage);
+        getUser();
         return data.message;
       },
       error: (error) => {
         if (error.message === 'Unauthorized access') {
-          reset();
           router.push('/');
           return 'Session expired, please login again';
         }
-        return error.message;
       },
     });
-  }
-
-  if (!user) {
-    return null;
   }
 
   return (
@@ -65,7 +59,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input type="name" placeholder={user.name} {...field} />
+                  <Input type="name" placeholder="Your name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -78,11 +72,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
               <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  {user.phone ? (
-                    <Input type="string" defaultValue={user.phone} placeholder={user.phone} {...field} />
-                  ) : (
-                    <Input type="string" placeholder="Phone number" {...field} />
-                  )}
+                  <Input type="string" placeholder="Phone number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -95,11 +85,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
               <FormItem>
                 <FormLabel>Bio</FormLabel>
                 <FormControl>
-                  {user.bio ? (
-                    <Input type="string" defaultValue={user.bio} placeholder={user.bio} {...field} />
-                  ) : (
-                    <Input type="string" placeholder="Bio" {...field} />
-                  )}
+                  <Textarea rows={3} placeholder="Bio" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

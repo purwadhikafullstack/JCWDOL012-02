@@ -1,4 +1,4 @@
-import { getUserWithEmail } from '@/models/user.model';
+import { getUserWithEmail } from '@/services/user.services';
 import { NextFunction, Request, Response } from 'express';
 
 export const verifyRegister = async (req: Request, res: Response, next: NextFunction) => {

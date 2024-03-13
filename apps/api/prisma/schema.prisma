@@ -11,23 +11,34 @@ datasource db {
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
-  name        String?
-  email       String        @unique
-  role        Role          @default(User)
-  phone       String?
-  image       String?
-  bio         String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  deleted     Boolean       @default(false)
-  address     Address[]
-  transaction Transaction[]
-  warehouse   Warehouse[]
-  cart        Cart[]
-  authType    AuthType
-  LocalAuth   LocalAuth?
-  SocialAuth  SocialAuth?
+  id           Int            @id @default(autoincrement())
+  name         String?
+  email        String         @unique
+  role         Role           @default(User)
+  phone        String?
+  image        String?
+  bio          String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deleted      Boolean        @default(false)
+  address      Address[]
+  transaction  Transaction[]
+  warehouse    Warehouse[]
+  cart         Cart[]
+  authType     AuthType
+  LocalAuth    LocalAuth?
+  SocialAuth   SocialAuth?
+  RefreshToken RefreshToken[]
+}
+
+model RefreshToken {
+  id          Int      @id @default(autoincrement())
+  hashedToken String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model LocalAuth {
@@ -38,7 +49,7 @@ model LocalAuth {
   otpCode               String?
   confirmed             Boolean  @default(false)
   confirmationTimeStamp DateTime
-  user                  User     @relation(fields: [userId], references: [id])
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId                Int      @unique
 }
 
@@ -46,7 +57,7 @@ model SocialAuth {
   id      Int    @id @default(autoincrement())
   service String
   email   String @unique
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  Int    @unique
 }
 

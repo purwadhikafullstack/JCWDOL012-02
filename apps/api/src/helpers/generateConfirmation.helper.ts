@@ -1,5 +1,5 @@
 import { configs } from '@/config';
-import { EmailType } from '@/services/sendEmail';
+import { EmailType } from '@/utils/sendEmail';
 import crypto from 'crypto';
 
 interface GenerateConfirmation {

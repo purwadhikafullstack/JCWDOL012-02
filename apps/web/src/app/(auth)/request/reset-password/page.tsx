@@ -45,8 +45,8 @@ export default function RequestResetPassword() {
         <div className="flex relative flex-col flex-1 w-full justify-center items-center">
           <div className="flex w-full absolute top-8 max-w-[500px] justify-between md:px-14 px-4 mb-8">
             <p>Megatronics.</p>
-            <Link href="/profile" className="text-sm flex items-center text-gray-700 space-x-4">
-              <ChevronLeft size={16} /> Back to profile
+            <Link href="/" className="text-sm flex items-center text-gray-700 space-x-4">
+              <ChevronLeft size={16} /> Back to home
             </Link>
           </div>
           <div className="flex flex-col w-full max-w-[500px] justify-center md:px-14 px-4 space-y-10">

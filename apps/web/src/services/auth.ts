@@ -1,50 +1,56 @@
 import { z } from 'zod';
-import { loginSchema } from '@/validators/authValidator';
-import { initialUser } from '@/store/sessionStore';
+import { AxiosError } from 'axios';
+import { getActions } from '@/store/authStore';
+import { axiosInstance, axiosAuth } from '@/lib/axios';
+import { confirmRegisterSchema, loginSchema } from '@/validators/authValidator';
+import { ErrorFromBe } from '@/@types';
 
-const apiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+const { setAccessToken } = getActions();
 
-export const loginEmail = async (values: z.infer<typeof loginSchema>) => {
-  const res = await fetch(`${apiUrl}auth/local/login`, {
-    method: 'POST',
-    credentials: 'include',
-    redirect: 'follow',
-    body: JSON.stringify(values),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const data = await res.json();
-  if (data.success) {
-    return data;
-  } else {
-    throw new Error(data.message);
-  }
+export const registerVerify = async (values: z.infer<typeof confirmRegisterSchema>) => {
+  return await axiosInstance
+    .post('/auth/register/verify', values)
+    .then((res) => res.data)
+    .then((data) => {
+      if (data.success) return data;
+    })
+    .catch((error: AxiosError<ErrorFromBe>) => {
+      throw new Error(error.response?.data.message);
+    });
 };
 
-export const refetchUser = async () => {
-  const res = await fetch(`${apiUrl}user/profile`, {
-    method: 'GET',
-    credentials: 'include',
-    redirect: 'follow',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const data = await res.json();
-  const user = data.user;
-  if (user) {
-    return user;
-  } else return initialUser;
+export const loginEmail = async (values: z.infer<typeof loginSchema>) => {
+  return await axiosInstance
+    .post('/auth/login', values)
+    .then((res) => res.data)
+    .then((data) => {
+      if (data.success) setAccessToken(data.access_token);
+    })
+    .catch((error: AxiosError<ErrorFromBe>) => {
+      throw new Error(error.response?.data.message);
+    });
 };
 
 export const logout = async () => {
-  return await fetch(`${apiUrl}auth/local/logout`, {
-    method: 'POST',
-    credentials: 'include',
-    redirect: 'follow',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  return await axiosAuth
+    .post('/auth/logout')
+    .then((res) => res.data)
+    .then((data) => {
+      if (data.success) {
+        setAccessToken('');
+        return data;
+      }
+    });
+};
+
+export const fetchUser = async () => {
+  return await axiosAuth
+    .get('/user/me')
+    .then((res) => res.data)
+    .then((data) => {
+      if (data.success === true) return data.user;
+    })
+    .catch((error: AxiosError<ErrorFromBe>) => {
+      return error.response?.data.message;
+    });
 };

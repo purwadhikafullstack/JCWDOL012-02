@@ -1,4 +1,4 @@
-import { getUserWithEmail } from '@/models/user.model';
+import { getUserWithEmail } from '@/services/user.services';
 import { Request, Response, NextFunction } from 'express';
 
 export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {

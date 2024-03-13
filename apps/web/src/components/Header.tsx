@@ -2,10 +2,13 @@
 
 import Link from 'next/link';
 import MaxWidthWrapper from './MaxWidthWrapper';
-import { buttonVariants } from './ui/button';
-import { usePathname, useRouter } from 'next/navigation';
 import { authPage } from '@/lib/constants';
-import { logout, refetchUser } from '@/services/auth';
+import { useEffect } from 'react';
+import { buttonVariants } from './ui/button';
+import { useSessionStore } from '@/utils/SessionProvider';
+import { fetchUser, logout } from '@/services/auth';
+import { usePathname, useRouter } from 'next/navigation';
+import { Banknote, LogOut, Package, ShoppingCart, Truck, User } from 'lucide-react';
 import {
   Menubar,
   MenubarContent,
@@ -15,38 +18,32 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar';
 import AvatarProfile from './AvatarProfile';
-import { LogOut, User } from 'lucide-react';
-import { useSessionStore } from '@/utils/SessionProvider';
-import { useEffect } from 'react';
 
-export const Header = () => {
-  const { user, isAuthenticated, reset, getLocalStorage, login, isSocialAuth, socialAuth, setLocalStorage } =
-    useSessionStore((state) => state);
-  const pathname = usePathname();
+interface HeaderProps {
+  refreshToken?: string | undefined;
+}
+
+export const Header = (props: HeaderProps) => {
+  const { refreshToken } = props;
+  const { user, isAuthenticated, setUser, resetUser } = useSessionStore((state) => state);
   const router = useRouter();
-
-  console.log(user);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const isSocial = isSocialAuth();
-    getLocalStorage();
-    const userData = async () => {
-      await refetchUser().then((data) => {
-        login(data);
-        setLocalStorage(data);
-      });
+    const getUserData = async () => {
+      await fetchUser()
+        .then((user) => setUser(user))
+        .catch(() => resetUser());
     };
-    if (isSocial) {
-      userData();
-      socialAuth(false);
+    if (refreshToken) {
+      getUserData();
     }
-  }, [getLocalStorage, login, isSocialAuth, socialAuth, setLocalStorage]);
+  }, [setUser, resetUser, refreshToken]);
 
-  const logOut = () => {
-    logout().then(() => {
-      reset();
-      router.push('/');
-    });
+  const handleLogout = () => {
+    router.push('/');
+    logout();
+    resetUser();
   };
 
   if (authPage.includes(pathname)) {
@@ -60,7 +57,7 @@ export const Header = () => {
           <Link href="/" className="flex z-40 font-semibold text-lg">
             <span>Megatronics.</span>
           </Link>
-          {isAuthenticated ? (
+          {isAuthenticated && user ? (
             <Menubar className="border-none">
               <MenubarMenu>
                 <MenubarTrigger className="data-[state=open]:bg-background data-[state=closed]:bg-background">
@@ -80,8 +77,32 @@ export const Header = () => {
                       <User />
                     </Link>
                   </MenubarItem>
+                  <MenubarItem>
+                    <Link href={'/carts'} className="flex w-full justify-between">
+                      <p>My Carts</p>
+                      <ShoppingCart />
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem>
+                    <Link href={'/orders'} className="flex w-full justify-between">
+                      <p>My Orders</p>
+                      <Package />
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem>
+                    <Link href={'/address'} className="flex w-full justify-between">
+                      <p>Shipping Address</p>
+                      <Truck />
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem>
+                    <Link href={'/transactions'} className="flex w-full justify-between">
+                      <p>Transactions</p>
+                      <Banknote />
+                    </Link>
+                  </MenubarItem>
                   <MenubarSeparator />
-                  <MenubarItem onClick={logOut} className="flex w-full justify-between cursor-pointer">
+                  <MenubarItem onClick={handleLogout} className="flex w-full justify-between cursor-pointer">
                     <p>Logout</p>
                     <LogOut />
                   </MenubarItem>

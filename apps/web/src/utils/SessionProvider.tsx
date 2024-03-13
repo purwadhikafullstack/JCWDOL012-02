@@ -16,6 +16,7 @@ export const SessionStoreProvider = ({ children }: SessionStoreProviderProps) =>
   if (!storeRef.current) {
     storeRef.current = createSessionStore();
   }
+
   return <SessionStoreContext.Provider value={storeRef.current}>{children}</SessionStoreContext.Provider>;
 };
 

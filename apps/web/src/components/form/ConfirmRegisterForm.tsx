@@ -8,8 +8,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { confirmRegisterSchema } from '@/validators/authValidator';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { registerVerify } from '@/app/actions/auth';
 import { toast } from 'sonner';
+import { registerVerify } from '@/services/auth';
 
 interface ConfirmRegisterFormProps {
   code: string;
