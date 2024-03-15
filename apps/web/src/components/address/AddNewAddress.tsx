@@ -1,34 +1,23 @@
 'use client';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
 import { Button } from '../ui/button';
-import { Separator } from '../ui/separator';
-import OpenCageMap from './OpenCageMap';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import { Type } from '@/app/(account)/address/page';
+import AddressForm from './AddressForm';
+import { useAddressStore } from '@/store/locationStore';
 
 export default function AddNewAddress() {
+  const { setStep } = useAddressStore();
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => setStep(0)}>
       <DialogTrigger asChild>
         <Button size="sm" className="sm:space-x-2">
-          <Plus size={20} className="sm:flex hidden" />
-          <span>Add New Address</span>
+          <Plus size={18} className="sm:flex hidden" />
+          <span>New Address</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-sm max-w-[1000px] px-2">
-        <DialogHeader>
-          <DialogTitle className="text-center">Add New Address</DialogTitle>
-        </DialogHeader>
-        <Separator className="bg-gray-700" />
-        <OpenCageMap />
-      </DialogContent>
+      <AddressForm type={Type.Add} />
     </Dialog>
   );
 }

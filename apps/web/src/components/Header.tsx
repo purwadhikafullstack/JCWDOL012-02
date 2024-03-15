@@ -41,7 +41,7 @@ export const Header = (props: HeaderProps) => {
           <Link href="/" className="flex z-40 font-semibold text-lg">
             <span>Megatronics.</span>
           </Link>
-          {isAuthenticated && user.role === 'User' ? (
+          {isAuthenticated ? (
             <UserMenu />
           ) : (
             <div className="flex items-center space-x-4">

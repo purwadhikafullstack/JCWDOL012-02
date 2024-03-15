@@ -8,6 +8,7 @@ import { SessionStoreProvider } from '@/utils/SessionProvider';
 import { cookies } from 'next/headers';
 import FlashToaster from '@/components/flash/flash';
 import './globals.css';
+import Providers from '@/utils/Providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,15 +22,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="light" suppressHydrationWarning>
       <body className={cn('min-h-screen bg-background antialiased', inter.className)}>
-        {/* <Providers> */}
-        <SessionStoreProvider>
-          <Sonner position="top-center" richColors toastOptions={{ duration: 1000 }} />
-          <FlashToaster />
-          <Header refreshToken={refreshToken!} />
-          {children}
-          <Footer />
-        </SessionStoreProvider>
-        {/* </Providers> */}
+        <Providers>
+          <SessionStoreProvider>
+            <Sonner position="top-center" richColors toastOptions={{ duration: 1000 }} />
+            <FlashToaster />
+            <Header refreshToken={refreshToken!} />
+            {children}
+            <Footer />
+          </SessionStoreProvider>
+        </Providers>
       </body>
     </html>
   );

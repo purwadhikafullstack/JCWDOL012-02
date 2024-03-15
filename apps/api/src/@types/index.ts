@@ -16,4 +16,5 @@ export interface LoginPayload {
 export interface ParsedToken {
   exp: number;
   userId: number;
+  role: string;
 }

@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { IPosition } from './Map';
+import { IPosition } from '@/store/locationStore';
 import { useEffect, useRef } from 'react';
 import { Marker, Popup, useMapEvents } from 'react-leaflet';
 import { SearchControl, OpenCageProvider } from 'leaflet-geosearch';
@@ -30,7 +30,6 @@ export default function LocationMarker({ position, setPosition }: IProps) {
   });
 
   map.on('geosearch/showlocation', (e: any) => {
-    console.log('e', e.location);
     // @ts-ignore
     setPosition({ lat: e.location.y, lng: e.location.x });
   });
