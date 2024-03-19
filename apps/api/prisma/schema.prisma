@@ -63,14 +63,16 @@ model SocialAuth {
 
 model Address {
   id            Int           @id @default(autoincrement())
-  latitude      Float
-  longtitude    Float
-  postalCode    Int
-  city          String
-  cityId        Int
+  label         String
+  recipientName String
+  phoneNumber   String
+  provinceId    String
+  cityId        String
   fullAddress   String
+  latitude      Float
+  longitude     Float
   isMainAddress Boolean       @default(false)
-  User          User?         @relation(fields: [userId], references: [id])
+  User          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int?
   Transaction   Transaction[]
   Warehouse     Warehouse?
@@ -154,6 +156,20 @@ model ProductImage {
   url       String
   Product   Product @relation(fields: [productId], references: [id])
   productId Int
+}
+
+model City {
+  city_id     String @unique
+  province_id String
+  province    String
+  type        String
+  city_name   String
+  postal_code String
+}
+
+model Province {
+  province_id String @unique
+  province    String
 }
 
 enum OrderStatus {

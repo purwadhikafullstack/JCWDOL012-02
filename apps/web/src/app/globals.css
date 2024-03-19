@@ -61,3 +61,8 @@
     min-height: calc(100vh - 5.5rem);
   }
 }
+
+.leaflet-container {
+  width: 100%;
+  height: 400px;
+}

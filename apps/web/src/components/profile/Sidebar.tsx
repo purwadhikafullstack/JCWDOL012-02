@@ -74,7 +74,7 @@ export default function Sidebar() {
                   <Package size={24} />
                 </SidebarLink>
                 <Separator />
-                <SidebarLink href={'/address'} label={'Shipping Addresses'}>
+                <SidebarLink href={'/address'} label={'My Address'}>
                   <Truck size={24} />
                 </SidebarLink>
                 <Separator />
