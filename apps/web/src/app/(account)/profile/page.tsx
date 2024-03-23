@@ -12,6 +12,11 @@ const ProfileForm = dynamic(() => import('@/components/profile/ProfileForm'), {
   loading: () => <ProfileFormLoader />,
 });
 
+const ChangeEmail = dynamic(() => import('@/components/profile/ChangeEmail'), {
+  ssr: false,
+  loading: () => <div>Loading</div>,
+});
+
 export default function ProfilePage() {
   const { user } = useSessionStore((state) => state);
 
@@ -29,6 +34,7 @@ export default function ProfilePage() {
         <div className="col-span-2 space-y-4  ">
           <ProfileForm user={user!} />
           <Separator />
+          <ChangeEmail />
           {user?.authType === 'Local' ? (
             <div>
               <UpdatePassword />

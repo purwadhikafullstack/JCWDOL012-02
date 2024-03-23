@@ -1,6 +1,5 @@
 'use client';
 
-import { requestResetPassword } from '@/services/user';
 import { requestResetPasswordSchema } from '@/validators/userValidator';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -15,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import Image from 'next/image';
 import { ChevronLeft } from 'lucide-react';
+import { requestResetPassword } from '@/services/auth';
 
 export default function RequestResetPassword() {
   const router = useRouter();

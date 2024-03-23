@@ -1,9 +1,9 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { jwtDecode } from 'jwt-decode';
 import { DecodedRefreshToken } from './@types';
+import { adminPage } from './lib/constants';
 
 const protectedPages = ['/profile', '/carts', '/orders', '/transactions', '/address'];
-const adminPages = ['/admin/dashboard', '/admin'];
 
 export function middleware(request: NextRequest) {
   const currentUser = request.cookies.get('refreshToken');
@@ -15,11 +15,14 @@ export function middleware(request: NextRequest) {
   }
   if (currentUser) {
     const decodedToken: DecodedRefreshToken = jwtDecode(currentUser.value);
-    if (adminPages.includes(request.nextUrl.pathname)) {
-      if (decodedToken.role !== 'Admin') {
+    if (adminPage.includes(request.nextUrl.pathname)) {
+      if (decodedToken.role === 'User') {
         return NextResponse.redirect(new URL('/?error=Unauthorized, only admin can access this page', request.url));
       }
       return NextResponse.next();
     }
+  }
+  if (adminPage.includes(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 }

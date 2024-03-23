@@ -1,12 +1,14 @@
 'use client';
 
 import { z } from 'zod';
-import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { updatePassword } from '@/services/user';
 import { userUpdatePasswordSchema } from '@/validators/userValidator';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import {
   Dialog,
   DialogContent,
@@ -16,9 +18,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { toast } from 'sonner';
-import { updatePassword } from '@/services/user';
 
 export function UpdatePassword() {
   const form = useForm<z.infer<typeof userUpdatePasswordSchema>>({

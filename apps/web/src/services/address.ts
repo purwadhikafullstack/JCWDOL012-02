@@ -37,7 +37,7 @@ export const getAddress = async (): Promise<IAddress[]> => {
     .get('/user/address')
     .then((res) => res.data)
     .then((data) => {
-      if (data.success) return data.addresses;
+      if (data.success) return data.data;
       revalidatePath('/address');
     })
     .catch((error: AxiosError<ErrorFromBe>) => {

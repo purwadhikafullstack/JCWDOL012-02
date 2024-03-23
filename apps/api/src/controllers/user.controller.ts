@@ -1,28 +1,34 @@
 import { NextFunction, Request, Response } from 'express';
 import { configs } from '@/config';
-import { generateOtp } from '@/helpers/otpGenerator';
 import { ParsedToken } from '@/@types';
 import { hashPassword } from '@/helpers/hashPassword.helper';
-import { EmailType, sendEmail } from '@/utils/sendEmail';
 import {
+  getExistingEmail,
   getUserById,
-  resetPasswordUser,
-  setUserOtp,
+  getUserEmail,
+  setUpdateEmail,
+  updateEmailUser,
   updateImageUser,
   updatePasswordUser,
   updateProfileUser,
 } from '@/services/user.services';
+import { responseHandler } from '@/helpers/response';
+import { EmailType, sendEmail } from '@/utils/sendEmail';
+import generateConfirmation from '@/helpers/generateConfirmation.helper';
+import dayjs from 'dayjs';
 
 export class UserController {
   async me(req: Request, res: Response, next: NextFunction) {
     try {
-      const parsedToken = req.user as ParsedToken;
-      const user = await getUserById(parsedToken.userId);
-      return res.status(200).json({
-        success: true,
-        message: 'Login success',
-        user: user,
-      });
+      const { userId } = req.user as ParsedToken;
+      const user = await getUserById(userId);
+
+      if (!user) {
+        res.clearCookie('refreshToken');
+        return responseHandler(res, 404, false, 'User not found');
+      }
+
+      return responseHandler(res, 200, true, 'Login success', user);
     } catch (error) {
       next(error);
     }
@@ -30,15 +36,12 @@ export class UserController {
 
   async updateImage(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = req.user as ParsedToken;
+      const { userId } = req.user as ParsedToken;
       const { file } = req;
       const urlFile = configs.baseApiUrl + file?.path;
-      const pushImage = await updateImageUser(user.userId, urlFile);
-      return res.status(201).json({
-        success: true,
-        message: 'Update image success',
-        image: pushImage.image,
-      });
+      await updateImageUser(userId, urlFile);
+
+      return responseHandler(res, 201, true, 'Update image success');
     } catch (error) {
       next(error);
     }
@@ -46,13 +49,11 @@ export class UserController {
 
   async updateProfile(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = req.user as ParsedToken;
+      const { userId } = req.user as ParsedToken;
       const { name, phone, bio } = req.body;
-      await updateProfileUser(user.userId, name, phone, bio);
-      return res.status(201).json({
-        success: true,
-        message: 'Update profile success',
-      });
+      await updateProfileUser(userId, name, phone, bio);
+
+      return responseHandler(res, 201, true, 'Update profile success');
     } catch (error) {
       next(error);
     }
@@ -60,44 +61,53 @@ export class UserController {
 
   async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = req.user as ParsedToken;
+      const { userId } = req.user as ParsedToken;
       const { newPassword } = req.body;
       const hashedNewPassword = hashPassword(newPassword);
-      await updatePasswordUser(user.userId, hashedNewPassword);
-      return res.status(201).json({
-        success: true,
-        message: 'Update password success',
-      });
+      await updatePasswordUser(userId, hashedNewPassword);
+
+      return responseHandler(res, 201, true, 'Update password success');
     } catch (error) {
       next(error);
     }
   }
 
-  async requestResetPassword(req: Request, res: Response, next: NextFunction) {
+  async requestUpdateEmail(req: Request, res: Response, next: NextFunction) {
     try {
+      const { userId } = req.user as ParsedToken;
       const { email } = req.body;
-      const generatedOtp = generateOtp(6);
-      await setUserOtp(email, generatedOtp);
-      const resetPasswordUrl = `${configs.frontEnd.url}/reset-password?code=${generatedOtp}&email=${email}`;
-      await sendEmail(email, resetPasswordUrl, EmailType.reset);
-      return res.status(200).json({
-        success: true,
-        message: 'Check your email for reset your password',
-      });
+      const existingEmail = await getExistingEmail(email);
+      if (existingEmail?.email) return responseHandler(res, 400, false, 'Email already exists');
+
+      const { url, code } = generateConfirmation(20, email, EmailType.updateEmail);
+      const expiresAt = dayjs().add(1, 'day').toDate();
+      await sendEmail(email, url.updateEmail, EmailType.updateEmail);
+
+      await setUpdateEmail(userId, email, expiresAt, code);
+      return responseHandler(res, 201, true, 'Send email success, check your email');
     } catch (error) {
       next(error);
     }
   }
 
-  async resetPassword(req: Request, res: Response, next: NextFunction) {
+  async verifyUpdateEmail(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, newPassword } = req.body;
-      const hashedPassword = hashPassword(newPassword);
-      await resetPasswordUser(email, hashedPassword);
-      return res.status(201).json({
-        success: true,
-        message: 'Reset password success',
-      });
+      const { userId } = req.user as ParsedToken;
+      const { email } = req.body;
+
+      await updateEmailUser(userId, email);
+      res.clearCookie('refreshToken');
+      return responseHandler(res, 201, true, 'Update email success, login with new email');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getEmail(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.user as ParsedToken;
+      const email = await getUserEmail(userId);
+      return responseHandler(res, 200, true, 'Get email success', email);
     } catch (error) {
       next(error);
     }

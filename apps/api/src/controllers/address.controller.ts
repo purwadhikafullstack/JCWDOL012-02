@@ -7,8 +7,8 @@ import {
   getUserAddress,
   updateAddress,
 } from '@/services/address.services';
-import { matchedData, validationResult } from 'express-validator';
-import { validateUpdateAddress } from '@/middleware/validator/addressValidation';
+import { matchedData } from 'express-validator';
+import { responseHandler } from '@/helpers/response';
 
 export class AddressController {
   async addNewAddress(req: Request, res: Response, next: NextFunction) {
@@ -28,10 +28,7 @@ export class AddressController {
         fullAddress,
         isMainAddress,
       });
-      return res.status(201).json({
-        success: true,
-        message: 'Add new address success',
-      });
+      return responseHandler(res, 201, true, 'Add new address success');
     } catch (error) {
       next(error);
     }
@@ -41,11 +38,7 @@ export class AddressController {
     try {
       const { userId } = req.user as ParsedToken;
       const addresses = await getUserAddress(userId);
-      return res.status(200).json({
-        success: true,
-        message: 'Get address success',
-        addresses,
-      });
+      return responseHandler(res, 200, true, 'Get addresses success', addresses);
     } catch (error) {
       next(error);
     }

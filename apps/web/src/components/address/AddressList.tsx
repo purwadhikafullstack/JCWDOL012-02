@@ -1,7 +1,7 @@
 'use effect';
 
 import { getAddress } from '@/services/address';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import UpdateAddress from './UpdateAddress';
 import DeleteAddress from './DeleteAddress';
 

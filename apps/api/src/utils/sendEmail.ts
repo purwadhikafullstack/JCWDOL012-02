@@ -6,6 +6,7 @@ import { transporter } from '@/helpers/nodemailer.helper';
 export enum EmailType {
   verification = 'verification',
   reset = 'reset-password',
+  updateEmail = 'update-email',
 }
 
 export async function sendEmail(email: string, urlCode: string, type: EmailType) {

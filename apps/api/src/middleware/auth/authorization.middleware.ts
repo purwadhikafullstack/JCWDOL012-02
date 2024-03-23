@@ -1,8 +1,10 @@
-import { User } from '@prisma/client';
-import { Request, Response, NextFunction } from 'express';
+import { ParsedToken } from '@/@types';
 
-export const authorization = (req: Request, res: Response, next: NextFunction) => {
-  const isAuthenticated = req.isAuthenticated();
+export const authorizeAdmin = (req: any, res: any, next: any) => {
+  const { role } = req.user as ParsedToken;
+  if (role === 'User') {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
 
   next();
 };

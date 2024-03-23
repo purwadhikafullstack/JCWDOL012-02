@@ -14,7 +14,7 @@ const fileFilter = (_req: Request, file: Express.Multer.File, cb: FileFilterCall
   } else cb(null, true);
 };
 
-const multerUpload = (filePrefix: string, folderName: string) => {
+export const multerUpload = (filePrefix: string, folderName: string) => {
   const destination = `public/${folderName}`;
   const storage = multer.diskStorage({
     destination: (_req: Request, _file: Express.Multer.File, cb: DestinationCallback) => {
@@ -31,3 +31,4 @@ const multerUpload = (filePrefix: string, folderName: string) => {
 };
 
 export const uploadUserProfile = multerUpload('user', 'user').single('image');
+export const uploadProductImage = multerUpload('product', 'product').single('image');
