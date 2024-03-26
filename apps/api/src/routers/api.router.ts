@@ -5,9 +5,11 @@ import { DataRouter } from './data.router';
 import { AddressRouter } from './address.router';
 import { ProductRouter } from './product.router';
 import { requireUser } from '@/middleware/auth/authentication.middleware';
+import { AdminRouter } from './admin.router';
 
 export class ApiRouter {
   private router: Router;
+  private adminRouter: AdminRouter;
   private authRouter: AuthRouter;
   private userRouter: UserRouter;
   private addressRouter: AddressRouter;
@@ -15,6 +17,7 @@ export class ApiRouter {
   private dataRouter: DataRouter;
 
   constructor() {
+    this.adminRouter = new AdminRouter();
     this.authRouter = new AuthRouter();
     this.userRouter = new UserRouter();
     this.addressRouter = new AddressRouter();
@@ -26,6 +29,7 @@ export class ApiRouter {
 
   private initializeRoutes() {
     this.router.use('/auth', this.authRouter.getRouter());
+    this.router.use('/admin', this.adminRouter.getRouter());
     this.router.use('/user', this.userRouter.getRouter());
     this.router.use('/user/address', requireUser, this.addressRouter.getRouter());
     this.router.use('/product', this.productRouter.getRouter());

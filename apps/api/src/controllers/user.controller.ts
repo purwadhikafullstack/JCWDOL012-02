@@ -6,6 +6,7 @@ import {
   getExistingEmail,
   getUserById,
   getUserEmail,
+  getUsers,
   setUpdateEmail,
   updateEmailUser,
   updateImageUser,

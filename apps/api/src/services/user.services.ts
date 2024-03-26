@@ -90,3 +90,11 @@ export const updateEmailUser = async (userId: number, email: string) => {
     data: { email, LocalAuth: { update: { email, confirmed: true } } },
   });
 };
+
+export const getUsers = async (role?: string) => {
+  const users = await prisma.user.findMany({ where: { role: 'User', deleted: false } });
+  const warehouseAdmin = await prisma.user.findMany({ where: { role: 'WarehouseAdmin', deleted: false } });
+  if (role === 'User') return { users };
+  if (role === 'WarehouseAdmin') return { warehouseAdmin };
+  return { users, warehouseAdmin };
+};
