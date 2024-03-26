@@ -7,6 +7,7 @@ export enum EmailType {
   verification = 'verification',
   reset = 'reset-password',
   updateEmail = 'update-email',
+  notification = 'notification',
 }
 
 export async function sendEmail(email: string, urlCode: string, type: EmailType) {
