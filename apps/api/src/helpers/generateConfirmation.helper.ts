@@ -4,7 +4,13 @@ import crypto from 'crypto';
 
 interface GenerateConfirmation {
   code: string;
-  url: string;
+  url: Url;
+}
+
+interface Url {
+  verificationUrl: string;
+  resetPasswordUrl: string;
+  updateEmail: string;
 }
 
 export default function generateConfirmation(length: number, email: string, type: EmailType): GenerateConfirmation {
@@ -17,8 +23,7 @@ export default function generateConfirmation(length: number, email: string, type
   }
   const verificationUrl = `${configs.frontEnd.url}/confirm/${code}?email=${email}`;
   const resetPasswordUrl = `${configs.frontEnd.url}/reset-password/${code}?email=${email}`;
-  return {
-    code,
-    url: type === EmailType.verification ? verificationUrl : resetPasswordUrl,
-  };
+  const updateEmail = `${configs.frontEnd.url}/profile/?code=${code}&email=${email}`;
+
+  return { code, url: { verificationUrl, resetPasswordUrl, updateEmail } };
 }

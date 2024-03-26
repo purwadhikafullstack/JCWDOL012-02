@@ -5,6 +5,8 @@ import { verifyRegister } from '@/middleware/auth/verification.middleware';
 import { validateLogin, validateRegister, validateVerifyRegister } from '@/middleware/validator/authValidation';
 import { registerEmailMiddleware } from '@/middleware/auth/registerEmail.middleware';
 import { loginMiddleware } from '@/middleware/auth/login.middleware';
+import { confirmResetPassword, resetPassword } from '@/middleware/user/resetPassword.middleware';
+import { validateResetPassword } from '@/middleware/validator/resetPasswordValidation';
 
 export class AuthRouter {
   private router: Router;
@@ -27,6 +29,15 @@ export class AuthRouter {
     // GOOGLE AUTH
     this.router.get('/google', passport.authenticate('google'));
     this.router.get('/google/callback', this.authController.googleCallback);
+
+    // RESER PASSWORD
+    this.router.post('/reset-password/request', resetPassword, this.authController.requestResetPassword);
+    this.router.put(
+      '/reset-password/confirm',
+      validateResetPassword,
+      confirmResetPassword,
+      this.authController.resetPassword,
+    );
   }
   getRouter(): Router {
     return this.router;

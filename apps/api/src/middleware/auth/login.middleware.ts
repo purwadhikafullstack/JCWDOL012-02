@@ -9,10 +9,10 @@ export async function loginMiddleware(req: Request, res: Response, next: NextFun
       success: false,
       message: 'Email not registered, please register first',
     });
-  if (user.LocalAuth.confirmed === false)
-    return res.status(400).json({
-      success: false,
-      message: 'Please verify your email',
-    });
+  // if (user.LocalAuth.confirmed === false)
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: 'Please verify your email',
+  //   });
   next();
 }

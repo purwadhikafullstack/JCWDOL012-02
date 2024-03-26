@@ -5,19 +5,7 @@ import { useSessionStore } from '@/utils/SessionProvider';
 import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 import AvatarProfile from '../AvatarProfile';
-import Link from 'next/link';
-import {
-  Banknote,
-  CalendarRange,
-  LayoutDashboard,
-  Package,
-  PanelLeftOpen,
-  PanelRightOpen,
-  Router,
-  ShoppingCart,
-  Truck,
-  User,
-} from 'lucide-react';
+import { Banknote, Package, PanelLeftOpen, PanelRightOpen, ShoppingCart, Truck, User } from 'lucide-react';
 import SidebarLink from './SidebarLink';
 import { useRouter } from 'next/navigation';
 
@@ -84,26 +72,6 @@ export default function Sidebar() {
               </div>
             </div>
           </div>
-          {user?.role === 'SuperAdmin' && (
-            <>
-              <h1 className="flex items-center justify-center font-semibold">Event Organizer</h1>
-              <div className="flex items-center justify-center border rounded-md">
-                <div className="w-full p-1">
-                  <div className="flex-col w-full h-full gap-2">
-                    <Link className="flex w-full justify-between" href="/dashboard" onClick={handleOpenSidebar}>
-                      <p>Dashboard</p>
-                      <LayoutDashboard size={18} />
-                    </Link>
-                    <Separator />
-                    <Link className="flex w-full justify-between" href="/products" onClick={handleOpenSidebar}>
-                      <p>My Events</p>
-                      <CalendarRange size={18} />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
         </div>
       </div>
     </div>

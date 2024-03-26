@@ -136,26 +136,18 @@ model CartDetail {
 
 model Product {
   id                Int                 @id @default(autoincrement())
-  title             String
+  name              String
   description       String              @db.Text
   price             Float
-  image             ProductImage[]
-  category          String
-  brand             String
+  image             String?
+  category          Category
+  brand             Brand
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   deleted           Boolean?
-  deletedAt         DateTime?
   stock             Stock[]
   TransactionDetail TransactionDetail[]
   cartDetail        CartDetail[]
-}
-
-model ProductImage {
-  id        Int     @id @default(autoincrement())
-  url       String
-  Product   Product @relation(fields: [productId], references: [id])
-  productId Int
 }
 
 model City {
@@ -179,6 +171,21 @@ enum OrderStatus {
   Dikirim
   PesananDikonfirmasi
   Dibatalkan
+}
+
+enum Category {
+  Phone
+  Laptop
+}
+
+enum Brand {
+  Axioo
+  Samsung
+  Apple
+  Oppo
+  Asus
+  Lenovo
+  Xiaomi
 }
 
 enum Role {

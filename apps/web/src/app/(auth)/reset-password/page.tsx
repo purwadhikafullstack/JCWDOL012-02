@@ -11,10 +11,10 @@ import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronLeft } from 'lucide-react';
-import { resetPassword } from '@/services/user';
 import { resetPasswordSchema } from '@/validators/userValidator';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { resetPassword } from '@/services/auth';
 
 export default function RequestResetPassword() {
   const router = useRouter();

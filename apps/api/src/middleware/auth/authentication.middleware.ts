@@ -1,10 +1,11 @@
+import { ParsedToken } from '@/@types';
 import { configs } from '@/config';
 import { User } from '@prisma/client';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 
 export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) => {
-  const user = req.user as User;
+  const user = req.user as ParsedToken;
   if (user.role !== 'SuperAdmin') {
     return res.status(403).json({
       success: false,

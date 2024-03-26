@@ -30,6 +30,8 @@ export default function AddressDetail(props: AddressDetailProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const query = useQueryClient();
 
+  console.log(cities);
+
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
     defaultValues: {

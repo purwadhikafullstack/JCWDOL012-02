@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
 
 export const requestResetPasswordSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -37,6 +37,10 @@ export const imageSchema = z.object({
 export const userUpdatePasswordSchema = z.object({
   oldPassword: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
   newPassword: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
+});
+
+export const userChangeEmailSchema = z.object({
+  email: z.string().email({ message: 'Invalid email address.' }),
 });
 
 export const addressSchema = z.object({

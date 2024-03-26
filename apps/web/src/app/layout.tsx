@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={cn('min-h-screen bg-background antialiased', inter.className)}>
         <Providers>
           <SessionStoreProvider>
-            <Sonner position="top-center" richColors toastOptions={{ duration: 1000 }} />
+            <Sonner position="top-center" richColors toastOptions={{ duration: 2000 }} />
             <FlashToaster />
             <Header refreshToken={refreshToken!} />
             {children}

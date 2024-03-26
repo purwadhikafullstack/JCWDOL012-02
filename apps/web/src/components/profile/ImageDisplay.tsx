@@ -65,7 +65,7 @@ export default function ImageDisplay(props: ImageDisplayProps) {
               width={200}
               height={200}
               priority
-              className="object-cover object-center w-auto h-auto:"
+              className="object-cover object-center w-auto h-auto"
             />
           ) : (
             <Avatar className="rounded-none w-full h-full">

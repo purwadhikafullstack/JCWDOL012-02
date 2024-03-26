@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import UserMenu from './menubar/UserMenu';
 import MaxWidthWrapper from './MaxWidthWrapper';
-import { authPage } from '@/lib/constants';
+import { adminPage, authPage, profilePage } from '@/lib/constants';
 import { fetchUser } from '@/services/auth';
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { buttonVariants } from './ui/button';
 import { useSessionStore } from '@/utils/SessionProvider';
+import SearchInput from './menubar/SearchInput';
 
 interface HeaderProps {
   refreshToken?: string | undefined;
@@ -41,6 +42,7 @@ export const Header = (props: HeaderProps) => {
           <Link href="/" className="flex z-40 font-semibold text-lg">
             <span>Megatronics.</span>
           </Link>
+          {adminPage.includes(pathname) || profilePage.includes(pathname) ? null : <SearchInput />}
           {isAuthenticated ? (
             <UserMenu />
           ) : (
